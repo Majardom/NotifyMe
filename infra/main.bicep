@@ -1,53 +1,39 @@
-@secure()
-param sqlAdminPassword string
+@description('Name of the Static Web App')
+var webAppName string = 'notifyme-ui'
 
+@description('Name of the Function App')
+var functionAppName string = 'notifyme-api'
+
+@description('Cosmos DB account name (must be globally unique)')
+var cosmosAccountName string = 'notifymecosmos'
+
+@description('Cosmos DB database name')
+var cosmosDbName string = 'notifyme-db'
+
+@description('Cosmos DB container name')
+var cosmosContainerName string = 'notifications'
+
+@description('General region for resources')
 var location string = resourceGroup().location
-var appServiceName string = 'notifyme-api'
-var storageName string = 'notifymestorage001'
-var sqlServerName string = 'notifyme-sqlserver'
-var sqlAdminLogin string = 'notifyadmin'
-var sqlDbName string = 'NotifyMeDB'
 
 //
-// App Service Plan (Free Tier)
+// 1. STATIC WEB APP (Frontend UI)
 //
-resource plan 'Microsoft.Web/serverfarms@2023-12-01' = {
-  name: '${appServiceName}-plan'
+resource staticWebApp 'Microsoft.Web/staticSites@2022-09-01' = {
+  name: webAppName
   location: location
   sku: {
-    name: 'F1'
+    name: 'Free'
     tier: 'Free'
   }
 }
 
 //
-// Web API App Service
+// 2. STORAGE ACCOUNT (required for Function App)
 //
-resource apiApp 'Microsoft.Web/sites@2023-12-01' = {
-  name: appServiceName
-  location: location
-  kind: 'app'
-  properties: {
-    httpsOnly: true
-    serverFarmId: plan.id
-  }
-}
-
-resource uiApp 'Microsoft.Web/sites@2023-12-01' = {
-  name: 'notifyme-ui'
-  location: location
-  kind: 'app'
-  properties: {
-    httpsOnly: true
-    serverFarmId: plan.id
-  }
-}
-
-//
-// Storage Account
-//
-resource storage 'Microsoft.Storage/storageAccounts@2023-04-01' = {
-  name: storageName
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+#disable-next-line BCP334
+  name: toLower('${functionAppName}sa')
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -56,30 +42,112 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-04-01' = {
 }
 
 //
-// SQL Server
+// 3. FUNCTION APP (API - Serverless Consumption Plan)
 //
-resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
-  name: sqlServerName
-  location: location
-  properties: {
-    administratorLogin: sqlAdminLogin
-    administratorLoginPassword: sqlAdminPassword
-    version: '12.0'
-  }
-}
-
-//
-// SQL Database
-//
-resource sqlDb 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
-  parent: sqlServer
-  name: sqlDbName
+resource functionPlan 'Microsoft.Web/serverfarms@2023-12-01' = {
+  name: '${functionAppName}-plan'
   location: location
   sku: {
-    name: 'Basic'
+    name: 'Y1'
+    tier: 'Dynamic'
   }
 }
 
-output apiAppUrl string = apiApp.properties.defaultHostName
-output uiAppUrl string = uiApp.properties.defaultHostName
-output sqlServerFullName string = sqlServer.properties.fullyQualifiedDomainName
+resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
+  name: functionAppName
+  location: location
+  kind: 'functionapp'
+  properties: {
+    httpsOnly: true
+    serverFarmId: functionPlan.id
+    siteConfig: {
+      appSettings: [
+        {
+          name: 'AzureWebJobsStorage'
+          value: storageAccount.listKeys().keys[0].value
+        }
+        {
+          name: 'FUNCTIONS_EXTENSION_VERSION'
+          value: '~4'
+        }
+        {
+          name: 'WEBSITE_RUN_FROM_PACKAGE'
+          value: '1'
+        }
+        {
+          name: 'COSMOS_DB_ENDPOINT'
+          value: 'https://${cosmosAccountName}.documents.azure.com:443/'
+        }
+        {
+          name: 'COSMOS_DB_KEY'
+          value: listKeys(cosmosAccountName, '2023-11-15').primaryMasterKey
+        }
+        {
+          name: 'COSMOS_DB_DATABASE'
+          value: cosmosDbName
+        }
+        {
+          name: 'COSMOS_DB_CONTAINER'
+          value: cosmosContainerName
+        }
+      ]
+    }
+  }
+}
+
+//
+// 4. COSMOS DB (Free Tier)
+//
+resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
+  name: cosmosAccountName
+  location: location
+  kind: 'GlobalDocumentDB'
+  sku: {
+    name: 'Standard'
+  }
+  properties: {
+    enableFreeTier: true
+    databaseAccountOfferType: 'Standard'
+    locations: [
+      {
+        locationName: location
+        failoverPriority: 0
+      }
+    ]
+  }
+}
+
+resource cosmosDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
+  parent: cosmosAccount
+  name: cosmosDbName
+  properties: {
+    options: {
+      throughput: 400
+    }
+    resource: {
+      id: cosmosDbName
+    }
+  }
+}
+
+resource cosmosContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
+  parent: cosmosDatabase
+  name: cosmosContainerName
+  properties: {
+    resource: {
+      id: cosmosContainerName
+      partitionKey: {
+        paths: ['/pk']
+        kind: 'Hash'
+      }
+    }
+    options: {}
+  }
+}
+
+//
+// OUTPUTS
+//
+output staticWebUrl string = staticWebApp.properties.defaultHostname
+output functionApiUrl string = functionApp.properties.defaultHostName
+output cosmosEndpoint string = cosmosAccount.properties.documentEndpoint
