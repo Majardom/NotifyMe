@@ -25,7 +25,7 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         resourceGroupName: NotifyMeRG
-        template: infra/main.bicep
+        template: ./infra/main.bicep
         parameters: |
             sqlAdminPassword=${{ secrets.SQL_ADMIN_PASSWORD }}
         failOnStdErr: false
