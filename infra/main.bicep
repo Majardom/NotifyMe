@@ -3,14 +3,14 @@ param sqlAdminPassword string
 
 var location string = resourceGroup().location
 var appServiceName string = 'notifyme-api'
-var functionAppName string = 'notifyme-func'
 var storageName string = 'notifymestorage001'
 var sqlServerName string = 'notifyme-sqlserver'
 var sqlAdminLogin string = 'notifyadmin'
 var sqlDbName string = 'NotifyMeDB'
+var staticWebAppName = 'notifyme-api-web'
 
 //
-// App Service Plan
+// App Service Plan (Free Tier)
 //
 resource plan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: '${appServiceName}-plan'
@@ -47,31 +47,14 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-04-01' = {
 }
 
 //
-// Function App
+// Static Web App (Frontend)
 //
-resource funcApp 'Microsoft.Web/sites@2023-12-01' = {
-  name: functionAppName
+resource staticWebApp 'Microsoft.Web/staticSites@2023-01-01' = {
+  name: staticWebAppName
   location: location
-  kind: 'functionapp'
-  properties: {
-    httpsOnly: true
-    serverFarmId: plan.id
-    siteConfig: {
-      appSettings: [
-        {
-          name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};AccountKey=${storage.listKeys().keys[0]}'
-        }
-        {
-          name: 'FUNCTIONS_EXTENSION_VERSION'
-          value: '~4'
-        }
-        {
-          name: 'WEBSITE_RUN_FROM_PACKAGE'
-          value: '1'
-        }
-      ]
-    }
+  sku: {
+    name: 'Free'
+    tier: 'Free'
   }
 }
 
@@ -101,5 +84,5 @@ resource sqlDb 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
 }
 
 output apiAppUrl string = apiApp.properties.defaultHostName
-output functionAppUrl string = funcApp.properties.defaultHostName
+output staticWebAppUrl string = staticWebApp.properties.defaultHostname
 output sqlServerFullName string = sqlServer.properties.fullyQualifiedDomainName
