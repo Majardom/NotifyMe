@@ -1,15 +1,13 @@
-param location string = resourceGroup().location
-
-param appServiceName string
-param functionAppName string
-param storageName string
-param sqlServerName string
-param sqlAdminLogin string
-
 @secure()
 param sqlAdminPassword string
 
-param sqlDbName string = 'NotifyMeDB'
+var location string = resourceGroup().location
+var appServiceName string = 'notifyme-api'
+var functionAppName string = 'notifyme-func'
+var storageName string = 'notifymestorage001'
+var sqlServerName string = 'notifyme-sqlserver'
+var sqlAdminLogin string = 'notifyadmin'
+var sqlDbName string = 'NotifyMeDB'
 
 //
 // App Service Plan
