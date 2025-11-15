@@ -42,6 +42,25 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 }
 
 //
+// 4. COSMOS DB (Free Tier)
+//
+resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
+  name: cosmosAccountName
+  location: location
+  kind: 'GlobalDocumentDB'
+  properties: {
+    enableFreeTier: true
+    databaseAccountOfferType: 'Standard'
+    locations: [
+      {
+        locationName: location
+        failoverPriority: 0
+      }
+    ]
+  }
+}
+
+//
 // 3. FUNCTION APP (API - Serverless Consumption Plan)
 //
 resource functionPlan 'Microsoft.Web/serverfarms@2023-12-01' = {
@@ -95,27 +114,7 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
   }
 }
 
-//
-// 4. COSMOS DB (Free Tier)
-//
-resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
-  name: cosmosAccountName
-  location: location
-  kind: 'GlobalDocumentDB'
-  sku: {
-    name: 'Standard'
-  }
-  properties: {
-    enableFreeTier: true
-    databaseAccountOfferType: 'Standard'
-    locations: [
-      {
-        locationName: location
-        failoverPriority: 0
-      }
-    ]
-  }
-}
+
 
 resource cosmosDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
   parent: cosmosAccount
