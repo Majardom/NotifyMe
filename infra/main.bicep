@@ -7,7 +7,6 @@ var storageName string = 'notifymestorage001'
 var sqlServerName string = 'notifyme-sqlserver'
 var sqlAdminLogin string = 'notifyadmin'
 var sqlDbName string = 'NotifyMeDB'
-var staticWebAppName = 'notifyme-api-web'
 
 //
 // App Service Plan (Free Tier)
