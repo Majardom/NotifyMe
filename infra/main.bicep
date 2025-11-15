@@ -34,6 +34,16 @@ resource apiApp 'Microsoft.Web/sites@2023-12-01' = {
   }
 }
 
+resource uiApp 'Microsoft.Web/sites@2023-12-01' = {
+  name: 'notifyme-ui'
+  location: location
+  kind: 'app'
+  properties: {
+    httpsOnly: true
+    serverFarmId: plan.id
+  }
+}
+
 //
 // Storage Account
 //
@@ -44,18 +54,6 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-04-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
-}
-
-//
-// Static Web App (Frontend)
-//
-resource staticWebApp 'Microsoft.Web/staticSites@2023-01-01' = {
-  name: staticWebAppName
-  location: location
-  sku: {
-    name: 'Free'
-    tier: 'Free'
-  }
 }
 
 //
@@ -84,5 +82,5 @@ resource sqlDb 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
 }
 
 output apiAppUrl string = apiApp.properties.defaultHostName
-output staticWebAppUrl string = staticWebApp.properties.defaultHostname
+output uiAppUrl string = uiApp.properties.defaultHostName
 output sqlServerFullName string = sqlServer.properties.fullyQualifiedDomainName
