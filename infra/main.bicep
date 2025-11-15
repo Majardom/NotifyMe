@@ -2,10 +2,10 @@
 var functionAppName string = 'notifyme-api'
 
 @description('Cosmos DB account name (must be globally unique)')
-var cosmosAccountName string = 'notifymecosmos'
+var cosmosAccountName string = 'notifymev2cosmos'
 
 @description('Cosmos DB database name')
-var cosmosDbName string = 'notifymev2-db'
+var cosmosDbName string = 'notifyme-db'
 
 @description('Cosmos DB container name')
 var cosmosContainerName string = 'notifications'
