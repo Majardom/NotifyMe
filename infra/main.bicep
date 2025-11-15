@@ -62,7 +62,7 @@ resource funcApp 'Microsoft.Web/sites@2023-12-01' = {
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};AccountKey=${listKeys(storage.name, '2023-04-01').keys[0].value}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};AccountKey=${storage.listKeys().keys[0]}'
         }
         {
           name: 'FUNCTIONS_EXTENSION_VERSION'

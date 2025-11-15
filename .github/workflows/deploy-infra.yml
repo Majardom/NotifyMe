@@ -27,6 +27,11 @@ jobs:
         resourceGroupName: NotifyMeRG
         template: infra/main.bicep
         parameters: |
-          @infra/parameters.json
+          location=westeurope
+          appServiceName=notifyme-api
+          functionAppName=notifyme-func
+          storageName=notifymestorage001
+          sqlServerName=notifyme-sqlserver
+          sqlAdminLogin=notifyadmin
           sqlAdminPassword=${{ secrets.SQL_ADMIN_PASSWORD }}
         failOnStdErr: false
