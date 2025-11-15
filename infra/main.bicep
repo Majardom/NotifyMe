@@ -16,17 +16,6 @@ var cosmosContainerName string = 'notifications'
 @description('General region for resources')
 var location string = resourceGroup().location
 
-
-resource staticWebApp 'Microsoft.Web/staticSites@2022-09-01' = {
-  name: webAppName
-  location: location
-  sku: {
-    name: 'Free'
-    tier: 'Free'
-  }
-}
-
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 #disable-next-line BCP334
   name: '${toLower(replace(functionAppName, '-', ''))}sa'
