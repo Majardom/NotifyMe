@@ -3,7 +3,7 @@ POST http://localhost:7040/api/queues
 Content-Type: application/json
 
 {
-  "userEmail": "testuser@example.com"
+  "userEmail": "testuser3@example.com"
 }
 
 ### Get queues 
@@ -22,27 +22,3 @@ DELETE http://localhost:7040/api/queues/testuser@example.com
 
 ### Clear entire queue
 DELETE http://localhost:7040/api/queues
-
-###
-# STEP 1 — Get device code
-# After running this request:
-# 1. Go to https://microsoft.com/devicelogin
-# 2. Enter the user_code returned in the response
-# 3. Sign in with ANY Microsoft account (work or personal)
-###
-POST https://login.microsoftonline.com/common/oauth2/v2.0/devicecode
-Content-Type: application/x-www-form-urlencoded
-
-client_id=2f4fcdff-365d-4cbb-9022-c493e68adbf7&
-scope=openid profile offline_access api://2f4fcdff-365d-4cbb-9022-c493e68adbf7/user_impersonation
-
-###
-# STEP 2 — Exchange device code for an access token
-# Replace {{device_code}} with the value from STEP 1 response
-###
-POST https://login.microsoftonline.com/common/oauth2/v2.0/token
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=urn:ietf:params:oauth:grant-type:device_code&
-client_id=2f4fcdff-365d-4cbb-9022-c493e68adbf7&
-device_code=
