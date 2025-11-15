@@ -29,7 +29,7 @@ resource staticWebApp 'Microsoft.Web/staticSites@2022-09-01' = {
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 #disable-next-line BCP334
-  name: toLower('${functionAppName}sa')
+  name: '${toLower(replace(functionAppName, '-', ''))}sa'
   location: location
   sku: {
     name: 'Standard_LRS'
