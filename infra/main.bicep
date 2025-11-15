@@ -117,6 +117,18 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
           name: 'COSMOS_DB_CONTAINER'
           value: cosmosContainerName
         }
+        {
+          name: 'AZURE_FUNCTIONS_ENVIRONMENT'
+          value: 'Production'
+        }
+        {
+          name: 'FUNCTIONS_WORKER_RUNTIME'
+          value: 'dotnet-isolated'
+        }
+        {
+          name: 'DOTNET_VERSION'
+          value: '8.0'
+        }
       ]
     }
   }
