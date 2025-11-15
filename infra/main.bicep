@@ -5,7 +5,7 @@ var functionAppName string = 'notifyme-api'
 var cosmosAccountName string = 'notifymecosmos'
 
 @description('Cosmos DB database name')
-var cosmosDbName string = 'notifyme-db'
+var cosmosDbName string = 'notifymev2-db'
 
 @description('Cosmos DB container name')
 var cosmosContainerName string = 'notifications'
