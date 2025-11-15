@@ -16,9 +16,7 @@ var cosmosContainerName string = 'notifications'
 @description('General region for resources')
 var location string = resourceGroup().location
 
-//
-// 1. STATIC WEB APP (Frontend UI)
-//
+
 resource staticWebApp 'Microsoft.Web/staticSites@2022-09-01' = {
   name: webAppName
   location: location
@@ -28,9 +26,7 @@ resource staticWebApp 'Microsoft.Web/staticSites@2022-09-01' = {
   }
 }
 
-//
-// 2. STORAGE ACCOUNT (required for Function App)
-//
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 #disable-next-line BCP334
   name: toLower('${functionAppName}sa')
@@ -41,9 +37,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   kind: 'StorageV2'
 }
 
-//
-// 4. COSMOS DB (Free Tier)
-//
 resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
   name: cosmosAccountName
   location: location
@@ -60,9 +53,36 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
   }
 }
 
-//
-// 3. FUNCTION APP (API - Serverless Consumption Plan)
-//
+
+
+resource cosmosDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
+  parent: cosmosAccount
+  name: cosmosDbName
+  properties: {
+    options: {
+      throughput: 400
+    }
+    resource: {
+      id: cosmosDbName
+    }
+  }
+}
+
+resource cosmosContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
+  parent: cosmosDatabase
+  name: cosmosContainerName
+  properties: {
+    resource: {
+      id: cosmosContainerName
+      partitionKey: {
+        paths: ['/pk']
+        kind: 'Hash'
+      }
+    }
+    options: {}
+  }
+}
+
 resource functionPlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: '${functionAppName}-plan'
   location: location
@@ -111,36 +131,6 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         }
       ]
     }
-  }
-}
-
-
-
-resource cosmosDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
-  parent: cosmosAccount
-  name: cosmosDbName
-  properties: {
-    options: {
-      throughput: 400
-    }
-    resource: {
-      id: cosmosDbName
-    }
-  }
-}
-
-resource cosmosContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
-  parent: cosmosDatabase
-  name: cosmosContainerName
-  properties: {
-    resource: {
-      id: cosmosContainerName
-      partitionKey: {
-        paths: ['/pk']
-        kind: 'Hash'
-      }
-    }
-    options: {}
   }
 }
 
