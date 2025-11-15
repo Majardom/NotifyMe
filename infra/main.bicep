@@ -119,7 +119,7 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         }
         {
           name: 'COSMOS_DB_KEY'
-          value: listKeys(cosmosAccountName, '2023-11-15').primaryMasterKey
+          value: cosmosAccount.listKeys().primaryMasterKey
         }
         {
           name: 'COSMOS_DB_DATABASE'
