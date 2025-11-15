@@ -1,14 +1,14 @@
 @description('Name of the Function App')
-var functionAppName string = 'notifyme-api'
+var functionAppName string = 'notifymev2-api'
 
 @description('Cosmos DB account name (must be globally unique)')
 var cosmosAccountName string = 'notifymev2cosmos'
 
 @description('Cosmos DB database name')
-var cosmosDbName string = 'notifyme-db'
+var cosmosDbName string = 'notifymev2-db'
 
 @description('Cosmos DB container name')
-var cosmosContainerName string = 'notifications'
+var cosmosContainerName string = 'notificationsv2'
 
 @description('General region for resources')
 var location string = resourceGroup().location
