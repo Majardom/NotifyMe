@@ -96,6 +96,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
   name: functionAppName
   location: location
   kind: 'functionapp'
+  dependsOn: [
+    cosmosDatabase
+    cosmosContainer
+  ]
   properties: {
     httpsOnly: true
     serverFarmId: functionPlan.id
