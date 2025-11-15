@@ -1,6 +1,3 @@
-@description('Name of the Static Web App')
-var webAppName string = 'notifyme-ui'
-
 @description('Name of the Function App')
 var functionAppName string = 'notifyme-api'
 
@@ -41,8 +38,6 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
     ]
   }
 }
-
-
 
 resource cosmosDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
   parent: cosmosAccount
@@ -127,9 +122,5 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
   }
 }
 
-//
-// OUTPUTS
-//
-output staticWebUrl string = staticWebApp.properties.defaultHostname
 output functionApiUrl string = functionApp.properties.defaultHostName
 output cosmosEndpoint string = cosmosAccount.properties.documentEndpoint
