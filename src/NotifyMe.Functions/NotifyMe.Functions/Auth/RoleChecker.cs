@@ -41,8 +41,8 @@ public class RoleChecker
 
 		message = string.Empty;
 
-		if (string.IsNullOrEmpty(envVariable) || envVariable == "Development")
-			return true;
+		//if (string.IsNullOrEmpty(envVariable) || envVariable == "Development")
+		//	return true;
 
 		var json = string.Empty;
 		try {
