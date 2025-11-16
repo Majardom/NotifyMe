@@ -22,7 +22,7 @@ async function  renderUser(user) {
     document.getElementById("user-role").textContent = roles?.join(", ") || "no roles";
     section.classList.remove("hidden");
 
-    if (!roles.includes("manager")) {
+    if (!roles?.includes("manager")) {
         document.getElementById("btn-next").style.display = "none";
         document.getElementById("btn-clear-queue").style.display = "none";
     }
