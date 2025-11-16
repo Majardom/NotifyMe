@@ -6,7 +6,7 @@
     }
   ],
   "auth": {
-    "rolesSource": "azureActiveDirectory",
+    "rolesSource": "aad",
     "identityProviders": {
       "azureActiveDirectory": {
         "registration": {
