@@ -45,9 +45,9 @@ public class RoleChecker
 
 		var json = string.Empty;
 		try {
-			if (!req.Headers.TryGetValues("x-ms-client-principal", out var headerValues))
+			if (!req.Headers.TryGetValues("x-client-aad-roles", out var headerValues))
 			{
-				message = "Header x-ms-client-principal is not found.";
+				message = "Header x-client-aad-roles is not found.";
 				return false;
 			}
 
@@ -55,15 +55,10 @@ public class RoleChecker
 			var decodedBytes = Convert.FromBase64String(encoded!);
 			json = Encoding.UTF8.GetString(decodedBytes);
 
-			var principal = JsonConvert.DeserializeObject<ClientPrincipal>(json);
+			var roles = JsonConvert.DeserializeObject<string[]>(json);
 
-			var roles = principal?.Claims
-				.Where(c => c.Type.EndsWith("/claims/role"))
-				.Select(c => c.Value)
-				.ToList();
-
-			var rolesString = roles != null ? string.Join(',', roles) : "Principal null";
-			message = $"x-ms-client-principal was found with following roles claims {rolesString} ";
+			var rolesString = roles != null ? string.Join(',', roles) : "Roles not found";
+			message = $"x-client-aad-roles was found with following roles claims {rolesString} ";
 
 			return roles == null ? false : roles.Contains(role.ToLower());
 		}
