@@ -17,7 +17,7 @@ async function renderUser(user) {
 
     document.getElementById("user-name").textContent = user.userDetails;
 
-    let roles = await apiGetRaw("/roles");
+    let roles = user.userRoles;
 
     document.getElementById("user-role").textContent = roles?.join(", ") || "no roles";
     section.classList.remove("hidden");
