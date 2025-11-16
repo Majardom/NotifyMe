@@ -1,7 +1,7 @@
 {
   "routes": [
     {
-      "route": "/api/{*rest}",
+      "route": "/api/{rest}",
       "rewrite": "https://notifymev2-api.azurewebsites.net/api/{rest}"
     }
   ],
