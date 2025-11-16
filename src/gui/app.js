@@ -68,7 +68,11 @@ async function apiGetRaw(path) {
     console.log("Status:", res.status);
     console.log("Response body:", body);
 
-    return JSON.parse(body);
+    try {
+        JSON.parse(body);
+    } catch {
+        return body;
+    }
 }
 
 async function apiPostRaw(path, body = null) {
@@ -78,7 +82,7 @@ async function apiPostRaw(path, body = null) {
         headers: body ? {
             "Content-Type": "application/json",
             "x-client-aad-roles": roleHeader
-        } : {"x-client-aad-roles": roleHeader},
+        } : { "x-client-aad-roles": roleHeader },
         body: body ? JSON.stringify(body) : null
     });
 
@@ -88,11 +92,12 @@ async function apiPostRaw(path, body = null) {
 async function apiDeleteRaw(path) {
     const roleHeader = JSON.stringify(roles);
 
-    const res = await fetch(apiBase + path, { method: "DELETE",
+    const res = await fetch(apiBase + path, {
+        method: "DELETE",
         headers: {
             "x-client-aad-roles": roleHeader  // ← custom header
         }
-     });
+    });
     return await res.json().catch(() => null);
 }
 
