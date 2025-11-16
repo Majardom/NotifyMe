@@ -25,6 +25,7 @@ async function renderUser(user) {
 
     if (!roles?.includes("manager")) {
         document.getElementById("btn-next").style.display = "none";
+        document.getElementById("btn-get-queues").style.display = "none";
         document.getElementById("btn-clear-queue").style.display = "none";
     }
 }
