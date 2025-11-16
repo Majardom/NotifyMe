@@ -69,7 +69,7 @@ async function apiGetRaw(path) {
     console.log("Response body:", body);
 
     try {
-        JSON.parse(body);
+        return JSON.parse(body);
     } catch {
         return body;
     }
