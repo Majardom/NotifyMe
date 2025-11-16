@@ -172,42 +172,6 @@ public class QueueFunctions
 		return response;
 	}
 
-	//[Function("GetRoles")]
-	//public async Task<HttpResponseData> GetRoles(
-	//[HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "roles")] HttpRequestData req)
-	//{
-	//	if (!req.Headers.TryGetValues("x-ms-client-principal", out var headerValues))
-	//	{
-	//		var testResponse = req.CreateResponse(HttpStatusCode.OK);
-	//		var testRoles = new string[] { "testRole" };
-	//		await testResponse.WriteStringAsync(JsonConvert.SerializeObject(testRoles));
-	//		return testResponse;
-	//	}
-
-	//	var encoded = headerValues.FirstOrDefault();
-	//	var decodedBytes = Convert.FromBase64String(encoded!);
-	//	var json = Encoding.UTF8.GetString(decodedBytes);
-
-	//	var principal = JsonConvert.DeserializeObject<ClientPrincipal>(json); ;
-
-	//	var roleType = !string.IsNullOrEmpty(principal.role_typ)
-	//		? principal.role_typ
-	//		: "roles";
-
-	//	var roles = principal.claims
-	//		.Where(c => c.typ == roleType || c.typ == "roles")
-	//		.Select(c => c.val)
-	//		.ToHashSet();
-
-	//	_logger.LogInformation("Clearing entire queue...");
-
-	//	await _cosmosService.ClearQueueAsync();
-
-	//	var response = req.CreateResponse(HttpStatusCode.OK);
-	//	await response.WriteStringAsync(JsonConvert.SerializeObject(roles));
-	//	return response;
-	//}
-
 	private static async Task<HttpResponseData> CheckRole(HttpRequestData req, QueueRole role) 
 	{
 		var roleString = role.ToString().ToLower();

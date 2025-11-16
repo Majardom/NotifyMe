@@ -80,12 +80,18 @@ async function apiPostRaw(path, body = null) {
         } : undefined,
         body: body ? JSON.stringify(body) : null
     });
-    
+
     return await res.json().catch(() => null);
 }
 
 async function apiDeleteRaw(path) {
-    const res = await fetch(apiBase + path, { method: "DELETE" });
+    const roleHeader = JSON.stringify(roles);
+
+    const res = await fetch(apiBase + path, { method: "DELETE",
+        headers: {
+            "x-client-aad-roles": roleHeader  // ← custom header
+        }
+     });
     return await res.json().catch(() => null);
 }
 
