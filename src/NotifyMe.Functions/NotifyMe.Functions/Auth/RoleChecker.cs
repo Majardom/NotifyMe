@@ -42,7 +42,8 @@ public class RoleChecker
 
 		if (string.IsNullOrEmpty(envVariable) || envVariable == "Development")
 			return true;
-
+			
+		var json = string.Empty
 		try {
 			if (!req.Headers.TryGetValues("x-ms-client-principal", out var headerValues))
 			{
@@ -52,7 +53,7 @@ public class RoleChecker
 
 			var encoded = headerValues.FirstOrDefault();
 			var decodedBytes = Convert.FromBase64String(encoded!);
-			var json = Encoding.UTF8.GetString(decodedBytes);
+			json = Encoding.UTF8.GetString(decodedBytes);
 
 			var principal = JsonConvert.DeserializeObject<ClientPrincipal>(json);
 
@@ -67,7 +68,7 @@ public class RoleChecker
 			return roles == null ? false : roles.Contains(role.ToLower());
 		}
 		catch(Exception ex) {
-			message = ex.ToString();
+			message = json + ex.ToString();
 			return false;
 		}
 	
