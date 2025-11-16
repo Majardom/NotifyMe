@@ -2,6 +2,7 @@
   "routes": [
     {
       "route": "/api/{rest}",
+      "methods": ["GET", "POST", "DELETE", "PUT", "PATCH"],
       "rewrite": "https://notifymev2-api.azurewebsites.net/api/{rest}"
     }
   ],
