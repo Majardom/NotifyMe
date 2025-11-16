@@ -13,7 +13,8 @@
           "clientId": "358010bf-e170-4590-b4ae-70bd5ac1fde8"
         }
       }
-    }
+    },
+    "rolesSource": "app"
   },
   "responseOverrides": {
     "401": {
