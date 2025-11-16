@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using System.Text;
+﻿using System.Text;
 using Microsoft.Azure.Functions.Worker.Http;
 using Newtonsoft.Json;
 
@@ -13,16 +12,24 @@ public enum QueueRole
 
 public class ClientPrincipal
 {
-	public string? auth_typ { get; set; }
-	public string? name_typ { get; set; }
-	public string? role_typ { get; set; }
-	public List<ClientPrincipalClaim> claims { get; set; } = new();
+	public string IdentityProvider { get; set; }
+	public string UserId { get; set; }
+	public string UserDetails { get; set; }
+
+	// SWA built-in roles ("authenticated", "anonymous")
+	public List<string> UserRoles { get; set; }
+
+	// Real claims passed through AAD (including role)
+	public List<ClientPrincipalClaim> Claims { get; set; }
 }
 
 public class ClientPrincipalClaim
 {
-	public string typ { get; set; } = "";
-	public string val { get; set; } = "";
+	[JsonProperty("typ")]
+	public string Type { get; set; }
+
+	[JsonProperty("val")]
+	public string Value { get; set; }
 }
 
 public class RoleChecker
@@ -45,19 +52,16 @@ public class RoleChecker
 		var decodedBytes = Convert.FromBase64String(encoded!);
 		var json = Encoding.UTF8.GetString(decodedBytes);
 
-		var principal = JsonConvert.DeserializeObject<ClientPrincipal>(json); ;
+		var principal = JsonConvert.DeserializeObject<ClientPrincipal>(json);
 
-		var roleType = !string.IsNullOrEmpty(principal.role_typ)
-			? principal.role_typ
-			: "roles";
+		var roles = principal?.Claims
+			.Where(c => c.Type.EndsWith("/claims/role"))
+			.Select(c => c.Value)
+			.ToList();
+			
+		var rolesString = roles != null ? string.Join(',', roles) : "Principal null";
+		message = $"x-ms-client-principal was found with following roles claims {rolesString} ";
 
-		var roles = principal.claims
-			.Where(c => c.typ == roleType || c.typ == "roles")
-			.Select(c => c.val)
-			.ToHashSet();
-
-		message = $"x-ms-client-principal was found with following roles claims {string.Join(',', roles)} ";
-
-		return roles.Contains(role.ToLower());
+		return roles == null ? false : roles.Contains(role.ToLower());
 	}
 }
