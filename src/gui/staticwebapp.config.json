@@ -16,6 +16,13 @@
       }
     }
   },
+  "login": {
+    "token": {
+      "allowedOptionalClaims": [
+        "roles"
+      ]
+    }
+  },
   "responseOverrides": {
     "401": {
       "redirect": "/login",
