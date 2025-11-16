@@ -20,7 +20,7 @@ public class QueueFunctions
 	}
 
 	[Function("CreateQueue")]
-	public async Task<HttpResponseData> CreateQueue([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "queues")] HttpRequestData req)
+	public async Task<HttpResponseData> CreateQueue([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "queues")] HttpRequestData req, FunctionContext context)
 	{
 		var response = await CheckRole(req, QueueRole.Member);
 		if (response != null)
@@ -174,10 +174,11 @@ public class QueueFunctions
 	private static async Task<HttpResponseData> CheckRole(HttpRequestData req, QueueRole role) 
 	{
 		var roleString = role.ToString().ToLower();
-		if (!RoleChecker.HasRole(req, roleString))
+		if (!RoleChecker.HasRole(req, roleString, out var message))
 		{
+			var user = req.Identities.First();
 			var forbidden = req.CreateResponse(System.Net.HttpStatusCode.Forbidden);
-			await forbidden.WriteStringAsync($"Required role: {roleString}");
+			await forbidden.WriteStringAsync($"Required role: {roleString}; {message}");
 			return forbidden;
 		}
 
