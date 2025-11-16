@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.Azure.Cosmos.Core;
 using Microsoft.Azure.Functions.Worker.Http;
 using Newtonsoft.Json;
 
@@ -51,11 +52,9 @@ public class RoleChecker
 				return false;
 			}
 
-			var encoded = headerValues.FirstOrDefault();
-			var decodedBytes = Convert.FromBase64String(encoded!);
-			json = Encoding.UTF8.GetString(decodedBytes);
+			var value = headerValues.FirstOrDefault();
 
-			var roles = JsonConvert.DeserializeObject<string[]>(json);
+			var roles = JsonConvert.DeserializeObject<string[]>(value!);
 
 			var rolesString = roles != null ? string.Join(',', roles) : "Roles not found";
 			message = $"x-client-aad-roles was found with following roles claims {rolesString} ";
