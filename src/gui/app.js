@@ -67,7 +67,7 @@ async function apiGetRaw(path) {
     console.log("Status:", res.status);
     console.log("Response body:", body);
 
-    return await res.json().catch(() => null);
+    return JSON.parse(body);
 }
 
 async function apiPostRaw(path, body = null) {
@@ -80,6 +80,7 @@ async function apiPostRaw(path, body = null) {
         } : undefined,
         body: body ? JSON.stringify(body) : null
     });
+    
     return await res.json().catch(() => null);
 }
 

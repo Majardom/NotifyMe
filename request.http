@@ -1,6 +1,7 @@
 ### Create new queue item
 POST http://localhost:7040/api/queues
 Content-Type: application/json
+x-client-aad-roles: ["manager","member"]
 
 {
   "userEmail": "testuser3@example.com"
@@ -9,6 +10,7 @@ Content-Type: application/json
 ### Get queues 
 GET http://localhost:7040/api/queues
 Content-Type: application/json
+x-client-aad-roles: ["manager","member"]
 
 ### Get next user in queue and shift queue
 POST http://localhost:7040/api/queues/pop
