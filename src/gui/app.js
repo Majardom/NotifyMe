@@ -7,7 +7,7 @@ function showOutput(data) {
     document.getElementById("output-text").textContent = JSON.stringify(data, null, 2);
 }
 
-async function  renderUser(user) {
+async function renderUser(user) {
     const section = document.getElementById("user-info");
 
     if (!user) {
@@ -54,6 +54,11 @@ function showQueue(title, queueItems) {
 
 async function apiGetRaw(path) {
     const res = await fetch(apiBase + path);
+    const body = await res.text();
+
+    console.log("Status:", res.status);
+    console.log("Response body:", body);
+    
     return await res.json().catch(() => null);
 }
 
@@ -117,9 +122,9 @@ async function clearQueue() {
 
 async function init() {
     const auth = await fetch("/.auth/me").then(r => r.json()).catch(() => null);
-    currentUser  = auth?.clientPrincipal || null;
+    currentUser = auth?.clientPrincipal || null;
 
-    await renderUser(currentUser );
+    await renderUser(currentUser);
 
     if (currentUser) {
         document.getElementById("queue-section").classList.remove("hidden");
