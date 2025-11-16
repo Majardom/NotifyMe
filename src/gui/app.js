@@ -18,9 +18,7 @@ async function renderUser(user) {
 
     document.getElementById("user-name").textContent = user.userDetails;
 
-    roles = user?.claims
-        ?.filter(c => c.typ.endsWith("/claims/role"))
-        ?.map(c => c.val) || [];;
+    roles = user?.claims?.filter(x => x.typ.endsWith('roles'))?.map(x => x.val) || [];;
 
     document.getElementById("user-role").textContent = roles?.join(", ") || "no roles";
     section.classList.remove("hidden");
