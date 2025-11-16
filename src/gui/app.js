@@ -1,6 +1,7 @@
 const isLocal = window.location.hostname === "localhost";
 const apiBase = isLocal ? "http://localhost:7040/api" : "/api";
 let currentUser = null;
+let roles = null;
 
 function showOutput(data) {
     document.getElementById("output").classList.remove("hidden");
@@ -17,7 +18,9 @@ async function renderUser(user) {
 
     document.getElementById("user-name").textContent = user.userDetails;
 
-    let roles = user.userRoles;
+    roles = user?.claims
+        ?.filter(c => c.typ.endsWith("/claims/role"))
+        ?.map(c => c.val) || [];;
 
     document.getElementById("user-role").textContent = roles?.join(", ") || "no roles";
     section.classList.remove("hidden");
@@ -53,19 +56,30 @@ function showQueue(title, queueItems) {
 }
 
 async function apiGetRaw(path) {
-    const res = await fetch(apiBase + path);
+    const roleHeader = JSON.stringify(roles);
+
+    const res = await fetch(apiBase + path, {
+        method: "GET",
+        headers: {
+            "x-client-aad-roles": roleHeader  // ← custom header
+        }
+    });
     const body = await res.text();
 
     console.log("Status:", res.status);
     console.log("Response body:", body);
-    
+
     return await res.json().catch(() => null);
 }
 
 async function apiPostRaw(path, body = null) {
+    const roleHeader = JSON.stringify(roles);
     const res = await fetch(apiBase + path, {
         method: "POST",
-        headers: body ? { "Content-Type": "application/json" } : undefined,
+        headers: body ? {
+            "Content-Type": "application/json",
+            "x-client-aad-roles": roleHeader
+        } : undefined,
         body: body ? JSON.stringify(body) : null
     });
     return await res.json().catch(() => null);
