@@ -7,7 +7,7 @@ function showOutput(data) {
     document.getElementById("output-text").textContent = JSON.stringify(data, null, 2);
 }
 
-function renderUser(user) {
+async function  renderUser(user) {
     const section = document.getElementById("user-info");
 
     if (!user) {
@@ -16,10 +16,11 @@ function renderUser(user) {
     }
 
     document.getElementById("user-name").textContent = user.userDetails;
-    document.getElementById("user-role").textContent = user.userRoles?.join(", ") || "no roles";
-    section.classList.remove("hidden");
 
-    const roles = user?.userRoles || [];
+    let roles = await apiGetRaw("/roles");
+
+    document.getElementById("user-role").textContent = roles?.join(", ") || "no roles";
+    section.classList.remove("hidden");
 
     if (!roles.includes("manager")) {
         document.getElementById("btn-next").style.display = "none";
@@ -118,7 +119,7 @@ async function init() {
     const auth = await fetch("/.auth/me").then(r => r.json()).catch(() => null);
     currentUser  = auth?.clientPrincipal || null;
 
-    renderUser(currentUser );
+    await renderUser(currentUser );
 
     if (currentUser) {
         document.getElementById("queue-section").classList.remove("hidden");
