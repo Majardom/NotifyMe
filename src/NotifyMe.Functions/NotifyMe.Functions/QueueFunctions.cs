@@ -174,7 +174,7 @@ public class QueueFunctions
 
 	[Function("GetRoles")]
 	public async Task<HttpResponseData> GetRoles(
-	[HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "queues/roles")] HttpRequestData req)
+	[HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "roles")] HttpRequestData req)
 	{
 		if (!req.Headers.TryGetValues("x-ms-client-principal", out var headerValues))
 		{
