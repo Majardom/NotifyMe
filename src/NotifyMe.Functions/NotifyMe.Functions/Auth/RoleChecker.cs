@@ -42,8 +42,8 @@ public class RoleChecker
 
 		if (string.IsNullOrEmpty(envVariable) || envVariable == "Development")
 			return true;
-			
-		var json = string.Empty
+
+		var json = string.Empty;
 		try {
 			if (!req.Headers.TryGetValues("x-ms-client-principal", out var headerValues))
 			{
