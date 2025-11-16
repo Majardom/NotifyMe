@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NotifyMe Queue</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script defer src="app.js"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+    <header class="bg-white shadow p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-semibold">NotifyMe</h1>
+
+        <div id="auth-buttons">
+        </div>
+    </header>
+
+    <main class="p-6 max-w-4xl mx-auto">
+
+        <section id="user-info" class="mb-6 hidden">
+            <div class="bg-white p-4 rounded shadow">
+                <p class="text-lg font-medium">Logged in as:</p>
+                <p id="user-name" class="text-xl font-bold"></p>
+                <p id="user-role" class="text-gray-600"></p>
+            </div>
+        </section>
+
+        <section id="queue-section" class="hidden">
+            <div class="bg-white p-6 rounded shadow">
+                <h2 class="text-xl font-semibold mb-4">Queue Actions</h2>
+
+                <div class="space-y-4">
+
+                    <button id="btn-create-queue" class="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700">
+                        Стати в чергу
+                    </button>
+
+                    <button id="btn-get-queues"
+                        class="w-full bg-gray-700 text-white p-3 rounded hover:bg-gray-800 mt-3">
+                        Отримати всю чергу
+                    </button>
+
+                    <button id="btn-next" class="w-full bg-purple-600 text-white p-3 rounded hover:bg-purple-700 mt-3">
+                        Наступний в черзі
+                    </button>
+
+                    <button id="btn-status"
+                        class="w-full bg-indigo-600 text-white p-3 rounded hover:bg-indigo-700 mt-3">
+                        Перевірити статус
+                    </button>
+
+                    <button id="btn-clear-queue" class="w-full bg-red-600 text-white p-3 rounded hover:bg-red-700 mt-3">
+                        Очистити чергу
+                    </button>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="output" class="mt-6 hidden">
+            <div class="bg-white p-4 rounded shadow">
+                <h3 id="output-title" class="text-lg font-semibold mb-2"></h3>
+                <div id="output-content" class="text-sm"></div>
+            </div>
+        </section>
+    </main>
+
+</body>
+
+</html>
