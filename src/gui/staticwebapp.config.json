@@ -1,8 +1,8 @@
 {
   "routes": [
     {
-      "route": "/api/*",
-      "rewrite": "https://notifymev2-api.azurewebsites.net/api/*"
+      "route": "/api/{*rest}",
+      "rewrite": "https://notifymev2-api.azurewebsites.net/api/{rest}"
     }
   ],
   "auth": {
