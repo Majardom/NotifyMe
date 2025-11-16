@@ -77,7 +77,7 @@ async function apiPostRaw(path, body = null) {
         headers: body ? {
             "Content-Type": "application/json",
             "x-client-aad-roles": roleHeader
-        } : undefined,
+        } : {"x-client-aad-roles": roleHeader},
         body: body ? JSON.stringify(body) : null
     });
 
