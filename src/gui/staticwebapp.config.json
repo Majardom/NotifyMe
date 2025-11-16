@@ -6,14 +6,16 @@
     }
   ],
   "auth": {
-    "rolesSource": "aad",
     "identityProviders": {
       "azureActiveDirectory": {
         "registration": {
           "openIdIssuer": "https://login.microsoftonline.com/42518a0e-16e0-4caf-80cb-e3edf29ee475",
           "clientId": "358010bf-e170-4590-b4ae-70bd5ac1fde8"
         }
-      }
+      },
+      "allowedApplications": [
+          "88a4c778-1e8c-4601-a058-2d1c8a10699f"
+      ]
     }
   },
   "responseOverrides": {
