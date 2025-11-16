@@ -43,25 +43,33 @@ public class RoleChecker
 		if (string.IsNullOrEmpty(envVariable) || envVariable == "Development")
 			return true;
 
-		if (!req.Headers.TryGetValues("x-ms-client-principal", out var headerValues)) {
-			message = "Header x-ms-client-principal is not found.";
+		try {
+			if (!req.Headers.TryGetValues("x-ms-client-principal", out var headerValues))
+			{
+				message = "Header x-ms-client-principal is not found.";
+				return false;
+			}
+
+			var encoded = headerValues.FirstOrDefault();
+			var decodedBytes = Convert.FromBase64String(encoded!);
+			var json = Encoding.UTF8.GetString(decodedBytes);
+
+			var principal = JsonConvert.DeserializeObject<ClientPrincipal>(json);
+
+			var roles = principal?.Claims
+				.Where(c => c.Type.EndsWith("/claims/role"))
+				.Select(c => c.Value)
+				.ToList();
+
+			var rolesString = roles != null ? string.Join(',', roles) : "Principal null";
+			message = $"x-ms-client-principal was found with following roles claims {rolesString} ";
+
+			return roles == null ? false : roles.Contains(role.ToLower());
+		}
+		catch(Exception ex) {
+			message = ex.ToString();
 			return false;
 		}
-
-		var encoded = headerValues.FirstOrDefault();
-		var decodedBytes = Convert.FromBase64String(encoded!);
-		var json = Encoding.UTF8.GetString(decodedBytes);
-
-		var principal = JsonConvert.DeserializeObject<ClientPrincipal>(json);
-
-		var roles = principal?.Claims
-			.Where(c => c.Type.EndsWith("/claims/role"))
-			.Select(c => c.Value)
-			.ToList();
-			
-		var rolesString = roles != null ? string.Join(',', roles) : "Principal null";
-		message = $"x-ms-client-principal was found with following roles claims {rolesString} ";
-
-		return roles == null ? false : roles.Contains(role.ToLower());
+	
 	}
 }
