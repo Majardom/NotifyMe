@@ -20,7 +20,7 @@ public class QueueFunctions
 	}
 
 	[Function("CreateQueue")]
-	public async Task<HttpResponseData> CreateQueue([HttpTrigger(AuthorizationLevel.Function, "post", Route = "queues")] HttpRequestData req)
+	public async Task<HttpResponseData> CreateQueue([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "queues")] HttpRequestData req)
 	{
 		var response = await CheckRole(req, QueueRole.Member);
 		if (response != null)
@@ -60,7 +60,7 @@ public class QueueFunctions
 
 	[Function("GetQueues")]
 	public async Task<HttpResponseData> GetQueues(
-	[HttpTrigger(AuthorizationLevel.Function, "get", Route = "queues")] HttpRequestData req)
+	[HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "queues")] HttpRequestData req)
 	{
 		var response = await CheckRole(req, QueueRole.Manager);
 		if (response != null)
@@ -79,7 +79,7 @@ public class QueueFunctions
 
 	[Function("PopNextInQueue")]
 	public async Task<HttpResponseData> NextInQueue(
-	[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "queues/pop")] HttpRequestData req)
+	[HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "queues/pop")] HttpRequestData req)
 	{
 		var response = await CheckRole(req, QueueRole.Manager);
 		if (response != null)
@@ -104,7 +104,7 @@ public class QueueFunctions
 
 	[Function("QueueStatus")]
 	public async Task<HttpResponseData> QueueStatus(
-	[HttpTrigger(AuthorizationLevel.Function, "get", Route = "queues/status/{email}")] HttpRequestData req,
+	[HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "queues/status/{email}")] HttpRequestData req,
 	string email)
 	{
 		var response = await CheckRole(req, QueueRole.Member);
@@ -131,7 +131,7 @@ public class QueueFunctions
 
 	[Function("DeleteFromQueue")]
 	public async Task<HttpResponseData> DeleteFromQueue(
-	[HttpTrigger(AuthorizationLevel.Function, "delete", Route = "queues/{email}")] HttpRequestData req,
+	[HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "queues/{email}")] HttpRequestData req,
 	string email)
 	{
 		var response = await CheckRole(req, QueueRole.Manager);
@@ -156,7 +156,7 @@ public class QueueFunctions
 
 	[Function("ClearQueue")]
 	public async Task<HttpResponseData> ClearQueue(
-	[HttpTrigger(AuthorizationLevel.Function, "delete", Route = "queues")] HttpRequestData req)
+	[HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "queues")] HttpRequestData req)
 	{
 		var response = await CheckRole(req, QueueRole.Manager);
 		if (response != null)
